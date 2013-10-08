@@ -6,104 +6,104 @@
 </head>
 <body>
 <div>
-	Promed Disease Count Histogram
-	<select id="data-source">
-		<option value="histogram_data_v1.json">Original</option>
-		<option value="histogram_data_v2.json" selected>Version 2</option>
-	</select>
+    Promed Disease Count Histogram
+    <select id="data-source">
+        <option value="histogram_data_v1.json">Original</option>
+        <option value="histogram_data_v2.json" selected>Version 2</option>
+    </select>
 </div>
 <div id="histogram" style="float:left; margin: 20px; width: 30%"></div>
 <div id="reports" style="float:right; margin: 20px; width: 60%">
-	<div id="report-count"></div>
-	<div id="report-list"></div>
+    <div id="report-count"></div>
+    <div id="report-list"></div>
 </div>
 
 <script type="text/javascript">
-	var loadFigures = function (data) {
-		var nodes = data.nodes;
-		var diseaseCounts = {};
-		for (var i = 0; i < nodes.length; i++) {
-			var count = nodes[i].disease_count;
-			if (!(diseaseCounts[count])) {
-				diseaseCounts[count] = [];
-			}
-			diseaseCounts[count].push(nodes[i].promed_id);
-		}
+    var loadFigures = function (data) {
+        var nodes = data.nodes;
+        var diseaseCounts = {};
+        for (var i = 0; i < nodes.length; i++) {
+            var count = nodes[i].disease_count;
+            if (!(diseaseCounts[count])) {
+                diseaseCounts[count] = [];
+            }
+            diseaseCounts[count].push(nodes[i].promed_id);
+        }
 
-		$('#histogram').empty();
-		var width = $('#histogram').width();
-		var height = 400;
-		var axisHeight = 30;
-		var padding = 20;
-		var color = '#bbdddd';
-		var figure = d3.select('#histogram').append('svg')
-			.attr('width', width + padding * 3)
-			.attr('height', height + axisHeight + padding);
+        $('#histogram').empty();
+        var width = $('#histogram').width();
+        var height = 400;
+        var axisHeight = 30;
+        var padding = 20;
+        var color = '#bbdddd';
+        var figure = d3.select('#histogram').append('svg')
+            .attr('width', width + padding * 3)
+            .attr('height', height + axisHeight + padding);
 
-		var counts = _.keys(diseaseCounts);
-		var countValues = _.map(counts, function (count) {
-			return diseaseCounts[count].length;
-		});
+        var counts = _.keys(diseaseCounts);
+        var countValues = _.map(counts, function (count) {
+            return diseaseCounts[count].length;
+        });
 
-		var xScale = d3.scale.linear()
-			.domain([_.min(counts), _.max(counts)])
-			.range([0, width]);
-		var yScale = d3.scale.linear()
-			.domain([0, _.max(countValues)])
-			.range([0, height]);
+        var xScale = d3.scale.linear()
+            .domain([_.min(counts), _.max(counts)])
+            .range([0, width]);
+        var yScale = d3.scale.linear()
+            .domain([0, _.max(countValues)])
+            .range([0, height]);
 
-		var showReports = function (count) {
-			d3.selectAll('rect')
-				.attr('fill', color);
+        var showReports = function (count) {
+            d3.selectAll('rect')
+                .attr('fill', color);
 
-			d3.selectAll('rect')
-				.filter(function (d) { return d == count; })
-				.attr('fill', '#00dddd');
+            d3.selectAll('rect')
+                .filter(function (d) { return d == count; })
+                .attr('fill', '#00dddd');
 
-			$('#report-count').html(diseaseCounts[count].length + ' reports with ' + count + ' diseases');
-			$('#report-list').empty();
-			_.each(diseaseCounts[count], function (promedId) {
-				var report = _.find(nodes, function (node) {
-					return node.promed_id === promedId;
-				});
-				var diseasesText = report.diseases.length > 0 ?' (' + report.diseases.join(', ') + ')' : ''
-				$('#report-list').append('<li><a href="http://www.promedmail.org/direct.php?id=' + promedId + '">' + report.title + '</a>' + diseasesText + '</li>')
-			});
-		};
+            $('#report-count').html(diseaseCounts[count].length + ' reports with ' + count + ' diseases');
+            $('#report-list').empty();
+            _.each(diseaseCounts[count], function (promedId) {
+                var report = _.find(nodes, function (node) {
+                    return node.promed_id === promedId;
+                });
+                var diseasesText = report.diseases.length > 0 ?' (' + report.diseases.join(', ') + ')' : ''
+                $('#report-list').append('<li><a href="http://www.promedmail.org/direct.php?id=' + promedId + '">' + report.title + '</a>' + diseasesText + '</li>')
+            });
+        };
 
-		var rectWidth = xScale(_.max(counts))/counts.length;
-		var counts = figure.selectAll('rect')
-			.data(counts)
-			.enter()
-			.append('rect')
-			.attr('x', function (d, i) { return padding + xScale(i);})
-			.attr('y', function (d) { return height - yScale(diseaseCounts[d].length);})
-			.attr('width', rectWidth)
-			.attr('height', function (d) { return yScale(diseaseCounts[d].length)})
-			.attr('fill', color)
-			.on('mouseover', showReports);
+        var rectWidth = xScale(_.max(counts))/counts.length;
+        var counts = figure.selectAll('rect')
+            .data(counts)
+            .enter()
+            .append('rect')
+            .attr('x', function (d, i) { return padding + xScale(i);})
+            .attr('y', function (d) { return height - yScale(diseaseCounts[d].length);})
+            .attr('width', rectWidth)
+            .attr('height', function (d) { return yScale(diseaseCounts[d].length)})
+            .attr('fill', color)
+            .on('mouseover', showReports);
 
-		var xAxis = d3.svg.axis()
-			.scale(xScale)
-			.orient('bottom');
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient('bottom');
 
-		var xAxisLeft = padding + rectWidth/2;
-		figure.append('g')
-			.call(xAxis)
-			.attr('transform', 'translate(' + xAxisLeft + ',' + (height + axisHeight - padding) + ')');
-	};
+        var xAxisLeft = padding + rectWidth/2;
+        figure.append('g')
+            .call(xAxis)
+            .attr('transform', 'translate(' + xAxisLeft + ',' + (height + axisHeight - padding) + ')');
+    };
 
-	var loadData = function (source) {
-		$.getJSON("data/" + source).done(loadFigures);
-	};
+    var loadData = function (source) {
+        $.getJSON("data/" + source).done(loadFigures);
+    };
 
-	$(document).ready(function () {
-		$('#data-source').change(function () {
-			loadData($('#data-source').val());
-		});
+    $(document).ready(function () {
+        $('#data-source').change(function () {
+            loadData($('#data-source').val());
+        });
 
-		loadData($('#data-source').val());
-	});
+        loadData($('#data-source').val());
+    });
 </script>
 </body>
 </html>
