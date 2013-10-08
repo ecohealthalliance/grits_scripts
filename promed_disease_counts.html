@@ -7,6 +7,10 @@
 <body>
 <div>
 	Promed Disease Count Histogram
+	<select id="data-source">
+		<option value="histogram_data_v1.json">Original</option>
+		<option value="histogram_data_v2.json" selected>Version 2</option>
+	</select>
 </div>
 <div id="histogram" style="float:left; margin: 20px; width: 30%"></div>
 <div id="reports" style="float:right; margin: 20px; width: 60%">
@@ -26,6 +30,7 @@
 			diseaseCounts[count].push(nodes[i].promed_id);
 		}
 
+		$('#histogram').empty();
 		var width = $('#histogram').width();
 		var height = 400;
 		var axisHeight = 30;
@@ -88,8 +93,16 @@
 			.attr('transform', 'translate(' + xAxisLeft + ',' + (height + axisHeight - padding) + ')');
 	};
 
+	var loadData = function (source) {
+		$.getJSON("data/" + source).done(loadFigures);
+	};
+
 	$(document).ready(function () {
-		$.getJSON("data/promed_network_with_symptoms_and_diseases.json").done(loadFigures);
+		$('#data-source').change(function () {
+			loadData($('#data-source').val());
+		});
+
+		loadData($('#data-source').val());
 	});
 </script>
 </body>

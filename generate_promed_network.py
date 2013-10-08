@@ -6,7 +6,7 @@ diseases = []
 matched_symptoms = set([])
 matched_diseases = set([])
 
-def _find_symptoms_and_diseases(text):
+def _find_symptoms_and_diseases(text_to_search):
     if len(diseases) < 1:
         _load_matrix_data()
 
@@ -14,10 +14,10 @@ def _find_symptoms_and_diseases(text):
     text_diseases = set()
 
     for symptom in symptoms:
-        if symptom[1].search(text):
+        if symptom[1].search(text_to_search):
             text_symptoms.add(symptom[0])
     for disease in diseases:
-        if disease[1].search(text):
+        if disease[1].search(text_to_search):
             text_diseases.add(disease[0])
 
     return ([symptom for symptom in text_symptoms], [disease for disease in text_diseases])
@@ -72,7 +72,14 @@ def generate_promed_network():
                 else:
                     source = ''
 
-                matched_symptoms, matched_diseases = _find_symptoms_and_diseases(report)
+                text_to_search = report
+                try:
+                    see_also_start = report.index('See Also')
+                except ValueError as e:
+                    # no see alsos in report
+                    see_also_start = len(report)
+                text_to_search = report[0:see_also_start]
+                matched_symptoms, matched_diseases = _find_symptoms_and_diseases(text_to_search)
 
                 promed_ids.append(report_ids[0])
                 nodes.append({'promed_id': report_ids[0], 'title': label, 'disease': disease, 'location': location, 'source_organization': source, 'symptoms': matched_symptoms, 'diseases': matched_diseases, 'symptom_count': len(matched_symptoms), 'disease_count': len(matched_diseases)})
