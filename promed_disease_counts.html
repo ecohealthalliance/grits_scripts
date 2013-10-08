@@ -72,6 +72,8 @@
         };
 
         var rectWidth = xScale(_.max(counts))/counts.length;
+
+        var timeout = null;
         var counts = figure.selectAll('rect')
             .data(counts)
             .enter()
@@ -81,7 +83,13 @@
             .attr('width', rectWidth)
             .attr('height', function (d) { return yScale(diseaseCounts[d].length)})
             .attr('fill', color)
-            .on('mouseover', showReports);
+            .on('mouseover', function (count) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    showReports(count);
+                }, 50);
+            })
+            .on('mouseout', function () { clearTimeout(timeout); });
 
         var xAxis = d3.svg.axis()
             .scale(xScale)
