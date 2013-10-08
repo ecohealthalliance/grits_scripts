@@ -28,9 +28,9 @@ def _load_matrix_data():
         reader = csv.reader(f)
         
         global diseases, symptoms
-        diseases = [(disease.lower(), re.compile(disease, flags=re.IGNORECASE)) for disease in reader.next()[1:]]
+        diseases = [(disease.lower(), re.compile(' ' + disease, flags=re.IGNORECASE)) for disease in reader.next()[1:]]
 
-        symptoms = [(row[0], re.compile(row[0], flags=re.IGNORECASE)) for row in reader]
+        symptoms = [(row[0], re.compile(' ' + row[0], flags=re.IGNORECASE)) for row in reader]
     
 
 def generate_promed_network():
