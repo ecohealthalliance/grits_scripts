@@ -5,7 +5,7 @@ symptoms = []
 characteristics = []
 diseases = []
 matched_symptoms = set([])
-matched_characteristics = set([])
+matched_characteristics = dict()
 matched_diseases = set([])
 
 def _find_symptoms_and_diseases(text_to_search):
@@ -13,7 +13,7 @@ def _find_symptoms_and_diseases(text_to_search):
         _load_matrix_data()
 
     text_symptoms = set()
-    text_characteristics = set()
+    text_characteristics = dict()
     text_diseases = set()
 
     for symptom in symptoms:
@@ -23,10 +23,11 @@ def _find_symptoms_and_diseases(text_to_search):
         if disease[1].search(text_to_search):
             text_diseases.add(disease[0])
     for characteristic in characteristics:
-        if characteristic[1].search(text_to_search):
-            text_characteristics.add(characteristic[0])
+        matches = characteristic[1].findall(text_to_search)
+        if matches:
+            text_characteristics[characteristic[0]] = [''.join(group) for group in matches]
 
-    return ([symptom for symptom in text_symptoms], [characteristic for characteristic in text_characteristics], [disease for disease in text_diseases])
+    return ([symptom for symptom in text_symptoms], text_characteristics, [disease for disease in text_diseases])
 
 
 def _load_matrix_data():
@@ -44,7 +45,7 @@ def _load_matrix_data():
         global characteristics
         reader.next()
 
-        characteristics = [(row[1], re.compile(row[0], flags=re.IGNORECASE)) for row in reader]
+        characteristics = [(row[1], re.compile(row[0])) for row in reader]
 
 def generate_promed_network():
 
