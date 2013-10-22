@@ -2,8 +2,10 @@ from glob import glob
 import re, json, csv
 
 symptoms = []
+characteristics = []
 diseases = []
 matched_symptoms = set([])
+matched_characteristics = set([])
 matched_diseases = set([])
 
 def _find_symptoms_and_diseases(text_to_search):
@@ -11,6 +13,7 @@ def _find_symptoms_and_diseases(text_to_search):
         _load_matrix_data()
 
     text_symptoms = set()
+    text_characteristics = set()
     text_diseases = set()
 
     for symptom in symptoms:
@@ -19,8 +22,11 @@ def _find_symptoms_and_diseases(text_to_search):
     for disease in diseases:
         if disease[1].search(text_to_search):
             text_diseases.add(disease[0])
+    for characteristic in characteristics:
+        if characteristic[1].search(text_to_search):
+            text_characteristics.add(characteristic[0])
 
-    return ([symptom for symptom in text_symptoms], [disease for disease in text_diseases])
+    return ([symptom for symptom in text_symptoms], [characteristic for characteristic in text_characteristics], [disease for disease in text_diseases])
 
 
 def _load_matrix_data():
@@ -32,6 +38,13 @@ def _load_matrix_data():
 
         symptoms = [(row[0], re.compile('\s' + row[0], flags=re.IGNORECASE)) for row in reader]
     
+    with open('data/disease_characteristic_regexes.csv', 'rU') as f:
+        reader = csv.reader(f)
+
+        global characteristics
+        reader.next()
+
+        characteristics = [(row[1], re.compile(row[0], flags=re.IGNORECASE)) for row in reader]
 
 def generate_promed_network():
 
@@ -79,10 +92,10 @@ def generate_promed_network():
                     # no see alsos in report
                     see_also_start = len(report)
                 text_to_search = report[0:see_also_start]
-                matched_symptoms, matched_diseases = _find_symptoms_and_diseases(text_to_search)
+                matched_symptoms, matched_characteristics, matched_diseases = _find_symptoms_and_diseases(text_to_search)
 
                 promed_ids.append(report_ids[0])
-                nodes.append({'promed_id': report_ids[0], 'title': label, 'disease': disease, 'location': location, 'source_organization': source, 'symptoms': matched_symptoms, 'diseases': matched_diseases, 'symptom_count': len(matched_symptoms), 'disease_count': len(matched_diseases)})
+                nodes.append({'promed_id': report_ids[0], 'title': label, 'disease': disease, 'location': location, 'source_organization': source, 'symptoms': matched_symptoms, 'characteristics': matched_characteristics, 'diseases': matched_diseases, 'symptom_count': len(matched_symptoms), 'disease_count': len(matched_diseases)})
                 for report_id in report_ids[1:]:
                     edges.append((report_ids[0], report_id))
 
