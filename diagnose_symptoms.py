@@ -22,7 +22,8 @@ def diagnose_symptoms(symptoms):
 			possible_diseases[disease].append(symptom)
 
 	if len(possible_diseases):
-		diagnosis = max(possible_diseases.iterkeys(), key=(lambda (key): len(possible_diseases[key])))
-		return diagnosis
+		max_symptom_diagnosis = max(possible_diseases.iterkeys(), key=(lambda (key): len(possible_diseases[key])))
+		max_symptoms = len(possible_diseases[max_symptom_diagnosis])
+		return [disease for disease in possible_diseases.iterkeys() if len(possible_diseases[disease]) is max_symptoms]
 	else:
-		return None
+		return []
