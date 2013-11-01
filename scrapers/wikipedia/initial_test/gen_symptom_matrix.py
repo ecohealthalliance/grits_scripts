@@ -41,7 +41,7 @@ def main():
 	parser.add_argument(
         	"symptomFile", help="CSV input file having list of symptoms", type=str)
     	parser.add_argument(
-        	"definitionFile", help="CSV input file having scraped Wikipedia symptoms in format (disease name, symptom definition) ", type=str)
+        	"definitionFile", help="CSV input file having scraped Wikipedia symptoms in format (disease name, symptom definition ", type=str)
     	parser.add_argument(
         	"outputFile", help="CSV outfile file to store symptom matrix ", type=str)
 
@@ -55,14 +55,10 @@ def main():
 	f_p = open(f_def_file,"r")
 	readText = csv.reader(f_p, delimiter=',', quotechar='"')
 	X = None
-
-	countNa = 0
 	
 	#Iterate through each tuple (disease, symptom_definition )
 	for row in readText:
-		if row[1] == "na":
-			countNa += 1
-			continue
+
 		#Create an empty symptom dictionary 
 		sym_dict = col.OrderedDict((sym,0) for sym in symptomList)
 		symptom_l = ""
@@ -93,7 +89,6 @@ def main():
 
 	#Write transposed matrix to output file
 	writeToFile(f_out_file, X.T)
-	print "Number of nas : " + str(countNa) 
 			
 if __name__ == "__main__":
 	main()

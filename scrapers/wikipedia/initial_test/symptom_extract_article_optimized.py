@@ -12,11 +12,10 @@ import urllib2
 import re
 import argparse
 from HTMLParser import HTMLParser
-from collections import defaultdict
 
 # Global dictionary holding disease name
 # and corresponding wikipedia link
-urlDict = defaultdict(list)
+urlDict = {}
 
 # Populate disease and wikipedia URL in
 # dictionary
@@ -26,9 +25,8 @@ def populateURL(f_in):
     with open(f_in, 'r') as fp_in:
         urlReader = csv.reader(fp_in)
         for row in urlReader:
-            urlDict[row[0]].append(row[1])
-	    urlDict[row[0]].append(row[2])
-	
+            urlDict[row[0]] = row[1]
+
 # Extract complete menu list from wikipedia
 # article to verifiy if symptoms are present in it.
 # It was observed that symptoms are defined under
@@ -37,28 +35,19 @@ def populateURL(f_in):
 
 
 def extractHtml(f_out):
-    count = 0
-    #initial_string = "Signs and symptoms"
+    initial_string = "Signs and symptoms"
     fp_out = open(f_out, 'w')
 
     # Sending request and parsing response to verify
     # if symptoms section is present.
     for disease, url in urlDict.items():
-	print disease
-	if url[0] == "na" or url[1] == "na " or url[1] =="na":
-		final_text = "na"
-		writeToFile(disease, final_text,fp_out)
-		count += 1
-		continue
-
-	initial_string = url[0]
 
         # Populating User-Agent header of HTTP request
-        hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11 ( nicopresto@gmail.com)'
+        hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
                }
 
         # Sending request and receving response
-        req = urllib2.Request(url[1], headers=hdr)
+        req = urllib2.Request(url, headers=hdr)
         response = urllib2.urlopen(req)
         html_text = response.read().decode('utf-8')
 
@@ -75,7 +64,6 @@ def extractHtml(f_out):
             extractSymptom(
                 disease, raw_text, menu_items, initial_string, fp_out)
     fp_out.close()
-    print count
 
 # Function to extract symptom paragraph if it is present
 
