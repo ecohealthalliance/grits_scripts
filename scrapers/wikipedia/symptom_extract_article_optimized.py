@@ -6,7 +6,7 @@
 # in entirity or by section.
 
 import csv
-import lxml.html as l
+import lxml.html as lxml
 from lxml import etree
 import urllib2
 import re
@@ -58,7 +58,7 @@ def extractHtml(f_out):
         html_text = response.read().decode('utf-8')
 
         # Parsing response to extract all menu items
-        raw_text = l.document_fromstring(html_text)
+        raw_text = lxml.document_fromstring(html_text)
 
         menu_items = raw_text.xpath(
             "//div[@id='mw-content-text']/h2/span/text()")
