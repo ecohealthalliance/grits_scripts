@@ -13,17 +13,17 @@ symptomList = []
 #List to hold diseases
 diseaseList = []
 
-#Populate list of symptoms from list of 
-#of symptoms
 def generateSymptomList(f_symp_file):
+# Function to extract create symptom list
 	with open(f_symp_file,"r") as s:
 		s_reader = csv.reader(s)
 		for symptom in s_reader:	
 			symp = symptom[0].replace("\"","")
 			symptomList.append(symp.lower())
 
+def writeToFile(f_out_file, matrix):
 #Write final matrix values to output file
-def writeToFile(f_out_file, Y):
+
 	#Write headers to output file
 	f_out = open(f_out_file,"w")
 	f_out.write(",")
@@ -32,10 +32,9 @@ def writeToFile(f_out_file, Y):
 
 	#Write matrix to output file
 	for i,symptom in enumerate(symptomList):
-		new_text = symptom + "," + ",".join(str(x) for x in Y[i,0:len(symptomList)].tolist())
+		new_text = symptom + "," + ",".join(str(x) for x in matrix[i,0:len(symptomList)].tolist())
 		f_out.write(new_text)
 		f_out.write("\n")
-#Main function	
 def main():	
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
@@ -54,11 +53,11 @@ def main():
 	generateSymptomList(f_symp_file)
 	f_p = open(f_def_file,"r")
 	readText = csv.reader(f_p, delimiter=',', quotechar='"')
-	X = None
+	matrix_symp_dis = None
 
 	countNa = 0
 	
-	#Iterate through each tuple (disease, symptom_definition )
+	#Iterate through each tuple 
 	for row in readText:
 		if row[1] == "na":
 			countNa += 1
@@ -82,17 +81,16 @@ def main():
 					sym_dict[symptom] = 1
 
 		#Transfer values from symptom dictionary to array
-		val = [d for d,i in sym_dict.items() if i == 1]
 		symp_count = np.array([val for val in sym_dict.values()], dtype=np.int)
 
 		#Create a matrix of dimensions (number of diseases X number of symptoms )
-		if X is None:
-			X = symp_count
+		if matrix_symp_dis is None:
+			matrix_symp_dis = symp_count
 		else:
-			X = np.vstack((X,symp_count))
+			matrix_symp_dis = np.vstack((matrix_symp_dis,symp_count))
 
 	#Write transposed matrix to output file
-	writeToFile(f_out_file, X.T)
+	writeToFile(f_out_file, matrix_symp_dis.T)
 	print "Number of nas : " + str(countNa) 
 			
 if __name__ == "__main__":

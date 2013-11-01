@@ -3,7 +3,7 @@
 
 import urllib2
 import csv
-import lxml.html as l
+import lxml.html as lxml
 import random
 import argparse
 from time import sleep
@@ -12,19 +12,15 @@ from time import sleep
 # Global dictionary holding disease name
 diseaseList = []
 
+def populateDiseaseList(input_file):
 # Populate dictionary with disease names
-
-
-def populateURL(input_file):
     with open(input_file, 'r') as fp_in:
-        urlReader = csv.reader(fp_in)
-        for row in urlReader:
-            diseaseList.append(row[0])
-
-# Extract links from google search results
-
+        url_reader = csv.reader(fp_in)
+        for row in url_reader:
+            disease_list.append(row[0])
 
 def extractDefinitions(output_file):
+# Extract links from google search results
     first_source = ""
     second_source = ""
     third_source = ""
@@ -36,7 +32,7 @@ def extractDefinitions(output_file):
     f_out.write("\n")
 
     # Iterate through disease list
-    for disease in diseaseList:
+    for disease in disease_list:
         # Add headers to request. This is being done as requests from bots was
         # being rejected
         hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
@@ -44,17 +40,17 @@ def extractDefinitions(output_file):
 
         # Replace all spaces with '+'. This is being done to develop query for
         # search
-        mod_disease = disease.replace(" ", "+")
+        modified_disease = disease.replace(" ", "+")
 
         # Generate URL for search
-        url_def = "https://www.google.com/search?q=define+%3A+" + mod_disease
+        url_def = "https://www.google.com/search?q=define+%3A+" + modified_disease
         print url_def
 
         # Send requests and parse response from Google
         req = urllib2.Request(url_def, headers=hdr)
         response = urllib2.urlopen(req)
         html_text = response.read().decode('utf-8')
-        raw_text = l.document_fromstring(html_text)
+        raw_text = lxml.document_fromstring(html_text)
 
         # It was seen while testing that any search term with define
         # could generate definitions from two sources ( maximum ),
@@ -107,9 +103,6 @@ def extractDefinitions(output_file):
         # Delay
         sleep(random.lognormvariate(1.5, 0.5))
 
-# Main function
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -120,7 +113,7 @@ def main():
     input_file = args.diseaseFile
     output_file = args.definitionFile
 
-    populateURL(input_file)
+    populateDiseaseList(input_file)
     extractDefinitions(output_file)
 
 if __name__ == '__main__':

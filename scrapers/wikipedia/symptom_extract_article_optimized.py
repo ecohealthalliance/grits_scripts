@@ -18,27 +18,22 @@ from collections import defaultdict
 # and corresponding wikipedia link
 urlDict = defaultdict(list)
 
+def populateSymptomList(f_in):
 # Populate disease and wikipedia URL in
 # dictionary
-
-
-def populateURL(f_in):
     with open(f_in, 'r') as fp_in:
         urlReader = csv.reader(fp_in)
         for row in urlReader:
             urlDict[row[0]].append(row[1])
 	    urlDict[row[0]].append(row[2])
 	
-# Extract complete menu list from wikipedia
-# article to verifiy if symptoms are present in it.
-# It was observed that symptoms are defined under
-# the heading "Signs and symptoms" in most
-# disease articles.
-
-
 def extractHtml(f_out):
+    # Extract complete menu list from wikipedia
+    # article to verifiy if symptoms are present in it.
+    # It was observed that symptoms are defined under
+    # the heading "Signs and symptoms" in most 
+    # disease articles.
     count = 0
-    #initial_string = "Signs and symptoms"
     fp_out = open(f_out, 'w')
 
     # Sending request and parsing response to verify
@@ -77,10 +72,9 @@ def extractHtml(f_out):
     fp_out.close()
     print count
 
-# Function to extract symptom paragraph if it is present
-
 
 def extractSymptom(disease, raw_text, menu_items, initial_string, fp_out):
+    # Function to extract symptom paragraph if it is present
 
     # Parsing response to extract data of 3 types:
     # 1. All text present in header ( tag h2)
@@ -116,17 +110,13 @@ def extractSymptom(disease, raw_text, menu_items, initial_string, fp_out):
     # into output file
     writeToFile(disease, final_text, fp_out)
 
-# Write disease and symptom extracted from wikipedia
-# into output file, ie. symptom_defintions.csv
-
 
 def writeToFile(disease, final_text, fp_out):
+    # Write disease and symptom extracted from wikipedia
+    # into output file, ie. symptom_defintions.csv
     fileStr = "\"" + disease + "\",\"" + final_text + "\""
     fp_out.write(fileStr)
     fp_out.write("\n")
-
-# Main function
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -138,7 +128,7 @@ def main():
 
     f_in = args.linkFile
     f_out = args.definitionsFile
-    populateURL(f_in)
+    populateSymptomList(f_in)
     extractHtml(f_out)
 
 if __name__ == '__main__':
