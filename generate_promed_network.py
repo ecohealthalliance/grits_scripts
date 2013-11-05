@@ -1,6 +1,8 @@
 from glob import glob
 import re, json, csv
 
+from diagnose_symptoms import diagnose_symptoms
+
 symptoms = []
 characteristics = []
 diseases = []
@@ -94,9 +96,10 @@ def generate_promed_network():
                     see_also_start = len(report)
                 text_to_search = report[0:see_also_start]
                 matched_symptoms, matched_characteristics, matched_diseases = _find_symptoms_and_diseases(text_to_search)
+                diagnosis = diagnose_symptoms(matched_symptoms)
 
                 promed_ids.append(report_ids[0])
-                nodes.append({'promed_id': report_ids[0], 'title': label, 'disease': disease, 'location': location, 'source_organization': source, 'symptoms': matched_symptoms, 'characteristics': matched_characteristics, 'diseases': matched_diseases, 'symptom_count': len(matched_symptoms), 'disease_count': len(matched_diseases)})
+                nodes.append({'promed_id': report_ids[0], 'title': label, 'disease': disease, 'location': location, 'source_organization': source, 'symptoms': matched_symptoms, 'characteristics': matched_characteristics, 'diseases': matched_diseases, 'symptom_count': len(matched_symptoms), 'disease_count': len(matched_diseases), 'diagnosis': diagnosis})
                 for report_id in report_ids[1:]:
                     edges.append((report_ids[0], report_id))
 
