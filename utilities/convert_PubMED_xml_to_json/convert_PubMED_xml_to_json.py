@@ -15,8 +15,8 @@ def generateFileList():
     # Populate a list structure with files to be
     # converted
 
-    # Read files holding names of files to be
-    # copied
+    # Read file holding names of files to be
+    # converted
     f = open("list_of_files.csv", "r")
     files = csv.reader(f)
     for row in files:
