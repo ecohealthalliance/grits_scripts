@@ -2,13 +2,10 @@
 # JSON
 
 from lxml import objectify, etree
-from collections import defaultdict
 import json
 import xmltodict
 import csv
 import re
-
-file_list = []
 
 
 def generateFileList():
@@ -27,8 +24,10 @@ def generateFileList():
         if file_name[-5:] == ".nxml":
             file_list.append(file_name)
 
+    return file_list
 
-def convertToJson():
+
+def convertToJson(file_list):
     # Convert XML file to JSON
 
     # Iterating through all file names in file list
@@ -46,19 +45,21 @@ def convertToJson():
             obj_dict = xmltodict.parse(obj_xml)
             obj_json = json.dumps(obj_dict, indent=4)
 
-            # Write JSON obj to file
+            # Write JSON obj to file. Stripping the complete filepath
+            # to extract file name and replacing ".nxml" extension
+            # with ".json"
             new_file_name = "json/" + \
                 re.sub("[\d\D]+/", "", file_name[:-5]) + ".json"
             f_out = open(new_file_name, "w")
-            f_out.write(ex)
+            f_out.write(obj_json)
 
             f_out.close()
             f.close()
         except:
             # If file could be not be found, print file name. ( For debugging )
-            print file_name
+            print file_name + ¨ not found. Skipping ! ¨
             continue
 
 if __name__ == "__main__":
-    generateFileList()
-    convertToJson()
+    file_list = generateFileList()
+    convertToJson(file_list)
