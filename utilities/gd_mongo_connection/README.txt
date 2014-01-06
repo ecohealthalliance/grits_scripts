@@ -1,7 +1,7 @@
 Usage:
 python gd_xlsx_to_mongo.py <filename> <database>
 where,
-filename = Name of Excel file in Google Drive to be downloaded
+filename = Name of Google Sheet in Google Drive to be downloaded
 database = Name of Database in MongoDb to be created or updated
 
 Libararies used:
