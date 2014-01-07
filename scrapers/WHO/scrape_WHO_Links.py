@@ -41,9 +41,7 @@ def main():
         # All links extracted above are incomplete. Constuct complete
         # links and write them to output file.
         for link in paras:
-            text = str(
-                year) + "," + link.replace("/entity",
-                                           "http://www.who.int")
+            text = str(year) + "," + link.replace("/entity","http://www.who.int")
             f_out.write(text)
             f_out.write("\n")
 
