@@ -14,14 +14,13 @@ Libararies used:
 
 Steps before running the script:
 1. Log in to Google API's, goto Services and enable Drive API and Drive SDK
-2. Goto API Access and click on "Create another client ID"
+2. Goto Credentials and click on "CREATE NEW CLIENT ID"
 3. In the pop - up box ** :
     1. Check on Web application
-    2. Click on more options
-    3. Enter http://localhost:8080/ in both "Authorized Redirect URIs" and "Authorized Javascript Origins"
+    2. Enter http://localhost:8090/ in both "Authorized Redirect URIs" and "Authorized Javascript Origins"
 4. Click on button Create client ID
 5. Click on Download JSON file to download authentication information and store in current working directory
-
+6. Rename downloaded authentication file to client_secrets.json
 
 Notes for file to be downloaded / uploaded:
 1. All work - sheets should have header rows.
