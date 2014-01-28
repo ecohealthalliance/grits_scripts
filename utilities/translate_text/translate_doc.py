@@ -4,26 +4,13 @@ import urllib2
 import json
 import argparse
 
-
-def readText(f):
-# Function to read text from input file
-
-    f_in = open(f, "r")
-    text = f_in.read()
-    f_in.close()
-    return text
-
-
-def translateText(source_text, source_lang, dest_lang):
+def translateText(source_text, source_lang, dest_lang, API_KEY):
 # Function to translate text
 
     # Reconstruct input text to build url for Google translate
     # URL
-    source_text = source_text.replace("%", " ").replace("\n", " ").replace(" ", "%20")
-
-    # The Google Translate API can be used only on registering for billing.
-    # Once done, extract the API Key and update API_KEY variable with it.
-    API_KEY = ""
+    source_text = source_text.replace("%", " ").replace("\n", " ")
+    source_text = urllib.quote(source_text)
 
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
            }
@@ -35,21 +22,12 @@ def translateText(source_text, source_lang, dest_lang):
     response = urllib2.urlopen(req)
     text = response.read()
     json_obj = json.loads(text)
-
-    return json_obj
-
-
-def writeText(json_obj, f):
-# Function to write translated text into output file
-    f_out = open(f, "w")
-
-    # Write value of key 'translatedText' from returned JSON object
-    # into output file
+    
+    # Extract translated text from json object
     translated_text = json_obj['data']['translations'][0]['translatedText']
     translated_text = translated_text.encode('utf-8')
-    f_out.write(translated_text)
-    f_out.close()
 
+    return translated_text
 
 def main():
     parser = argparse.ArgumentParser()
@@ -61,17 +39,23 @@ def main():
         "sourceLang", help="Language of content to be translated ", type=str)
     parser.add_argument(
         "translatedLang", help="Langauge into which content is to be translated ", type=str)
+    parser.add_argument(
+	"apikey", help="API Key from Google Translate API", type=str)
 
     args = parser.parse_args()
 
     # Read input file
-    text = readText(args.sourceFile)
+    f_in = open(args.sourceFile)
+    source_text = f_in.read()
 
     # Translate text from input file
-    json_obj = translateText(text, args.sourceLang, args.translatedLang)
+    translated_text = translateText(source_text, args.sourceLang, args.translatedLang, args.apikey)
 
-    # Write text to output file
-    writeText(json_obj, args.translatedFile)
+    # Write value of key 'translatedText' from returned JSON object
+    # into output file
+    f_out = open(args.translatedFile, "w")
+    f_out.write(translated_text)
+    f_out.close()
 
 if __name__ == "__main__":
     main()
