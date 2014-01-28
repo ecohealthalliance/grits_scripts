@@ -4,17 +4,17 @@ import urllib2
 import json
 import argparse
 
-def translateText(source_text, source_lang, dest_lang, API_KEY):
+
+def translateText(source_text, source_lang, dest_lang, api_key):
 # Function to translate text
 
     # Reconstruct input text to build url for Google translate
     # URL
-    source_text = source_text.replace("%", " ").replace("\n", " ")
-    source_text = urllib.quote(source_text)
+    source_text = urllib2.quote(source_text)
 
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
            }
-    link = "https://www.googleapis.com/language/translate/v2?key=" + API_KEY + \
+    link = "https://www.googleapis.com/language/translate/v2?key=" + api_key + \
         "&source=" + source_lang + "&target=" + dest_lang + "&q=" + source_text
 
     # Send request and convert response to json object
@@ -22,12 +22,13 @@ def translateText(source_text, source_lang, dest_lang, API_KEY):
     response = urllib2.urlopen(req)
     text = response.read()
     json_obj = json.loads(text)
-    
+
     # Extract translated text from json object
     translated_text = json_obj['data']['translations'][0]['translatedText']
     translated_text = translated_text.encode('utf-8')
 
     return translated_text
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -40,13 +41,13 @@ def main():
     parser.add_argument(
         "translatedLang", help="Langauge into which content is to be translated ", type=str)
     parser.add_argument(
-	"apikey", help="API Key from Google Translate API", type=str)
+        "apikey", help="API Key from Google Translate API", type=str)
 
     args = parser.parse_args()
 
     # Read input file
-    f_in = open(args.sourceFile)
-    source_text = f_in.read()
+    with open(args.sourceFile) as f_in:
+        source_text = f_in.read()
 
     # Translate text from input file
     translated_text = translateText(source_text, args.sourceLang, args.translatedLang, args.apikey)
