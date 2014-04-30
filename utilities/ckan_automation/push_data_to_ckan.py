@@ -3,7 +3,7 @@
 # metadata. Files to be uploaded are stored in 
 #a folder /data_ckan/ in root.
 
-# Print statement are present for logging purposes.
+# Print statements are present for logging purposes.
 
 import csv
 import os
