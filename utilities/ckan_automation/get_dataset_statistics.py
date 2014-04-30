@@ -1,4 +1,4 @@
-#Script for obtaining metadata information about 
+#Script for obtaining metadata information 
 #for datasets. For this, it is necessary to have active
 #links which end with file names ( name and extension ).
 
