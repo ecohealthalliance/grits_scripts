@@ -17,7 +17,7 @@ Steps before running the script:
 2. Goto Credentials and click on "CREATE NEW CLIENT ID"
 3. In the pop - up box ** :
     1. Check on Web application
-    2. Enter http://localhost:8090/ in both "Authorized Redirect URIs" and "Authorized Javascript Origins"
+    2. Enter http://localhost:8080/ in both "Authorized Redirect URIs" and "Authorized Javascript Origins"
 4. Click on button Create client ID
 5. Click on Download JSON file to download authentication information and store in current working directory
 6. Rename downloaded authentication file to client_secrets.json
