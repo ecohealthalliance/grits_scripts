@@ -1,2 +1,2 @@
-Please note that before executing CKAN related scripts, CKAN needs to be downloaded and installed in the current working directory.
+Please note that before executing scripts which use CKAN API's, CKAN needs to be downloaded and installed in current working directory.
 
