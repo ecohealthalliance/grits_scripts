@@ -32,7 +32,7 @@ def downloadExcel(conn, fileToDownload, downloadedFile):
     for fileN in fileList:
 
         # If yes, extract file id and download file
-        if fileN['title'] == fileToDownload:
+        if fileN['title'] == fileToDownload and fileN['labels']['trashed'] == False:
             id_file = fileN['id']
 
             # Download file using file id
@@ -40,6 +40,7 @@ def downloadExcel(conn, fileToDownload, downloadedFile):
             outputFile['downloadUrl'] = fileN['exportLinks'][
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             outputFile.GetContentFile(downloadedFile)
+	    break
 
     print "Downloaded Excel File"
 
