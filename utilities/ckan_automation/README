@@ -1,2 +1,9 @@
 Please note that before executing scripts which use CKAN API's, CKAN needs to be downloaded and installed in current working directory.
 
+Execution format for statistics file:
+python get_dataset_statistics.py <Dataset List File> <Output File>
+
+Execution format for automation file:
+python push_data_to_ckan.py <Dataset List File> <Ckan Url> <CKAN API Key>
+
+In both cases above, please use "ecohd.csv" as Dataset List File.
