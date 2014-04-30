@@ -90,7 +90,7 @@ def main():
                 # associated to a dataset
                 for link, format_t in zip(links, formats):
 
-                    # Download file from source and path to which
+                    # Download file from source and extract path to which
                     # file was stored. The path is being stored to
                     # extract file name and use it for resource
                     # creation
