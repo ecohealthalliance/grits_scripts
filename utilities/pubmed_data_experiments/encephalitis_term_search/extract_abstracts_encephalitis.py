@@ -48,10 +48,7 @@ def main():
             # Write results to output file
             final_text = ""
             if terms_present != "":
-                final_text = "\"" + row['doi'] + "\"" + "," + "\"" + row['journal_title'] + \
-                    "\"" + "," + "\"" + \
-                    terms_present[:-1] + "\"" + \
-                    "," + "\"" + abstract + "\""
+                final_text = "\"" + row['doi'] + "\"" + "," + "\"" + row['journal_title'] + "\"" + "," + "\"" + terms_present[:-1] + "\"" + "," + "\"" + abstract + "\""
                 f_out.write(final_text)
                 f_out.write("\n")
             else:
