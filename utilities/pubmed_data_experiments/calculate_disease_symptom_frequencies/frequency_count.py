@@ -50,7 +50,7 @@ def main():
         for row in reader:
             if row['abstract'] != "na":
 
-                # Call function to calculate frequences of
+                # Call function to calculate frequencies of
                 #symptoms and diseases in abstracts
                 frequencyCount(row['abstract'])
 
