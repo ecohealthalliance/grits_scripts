@@ -32,7 +32,7 @@ def main():
 
     #This is being done so that large files could 
     #be broken down into smaller chunks and parsed. 
-    #It will be replaced if an alternative is found.
+    #It could be replaced if an alternative is found.
     filelist = ['pubmed_research_articles']
     
     #Call function to create GRID Event dictionary
